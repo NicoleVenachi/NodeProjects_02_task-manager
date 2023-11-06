@@ -6,4 +6,5 @@ const TaskSchema = new mongoose.Schema({
   completed: Boolean
 })
 
-module.exports = mongoose.model('Task') //coleccionAEscirbirEnLaDB, SwSchema
+const model = mongoose.model('Task', TaskSchema) //coleccionAEscirbirEnLaDB, SwSchema
+module.exports = model 
