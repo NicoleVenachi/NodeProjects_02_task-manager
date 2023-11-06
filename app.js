@@ -1,6 +1,7 @@
 
 // imports
-require('./db/connect'); //connection to DB
+const connectDB = require('./db/connect'); //connection to DB
+require('dotenv').config()
 
 const express = require('express');
 const tasks = require('./routes/tasks')
@@ -30,6 +31,19 @@ app.use('/api/v1/tasks', tasks)
 // defino el prueto a escuchar
 const PORT = 3000; // || process.env;
 
-app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
-})
+//llamo la conexión a la DB, sino se conecta, no pongo a correr el server
+
+const start = async () => {
+  try {
+  
+    await connectDB(process.env.MONGO_URI)
+    app.listen(PORT, () => {
+      console.log(`Server running on http://localhost:${PORT}`);
+    })
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+start() //llamo ala funion
+
