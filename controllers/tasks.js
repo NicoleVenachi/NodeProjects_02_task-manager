@@ -4,11 +4,11 @@ const getAllTasks = (req, res) => {
 }
 
 const createTask = (req, res) => {
-  res.send('create Task')
+  res.json(req.body) //test to send what i've received
 }
 
 const getTask = (req, res) => {
-  res.send('get single task')
+  res.json({id: req.params.id}) // test to response using the id on the url params
 }
 
 const updateTask = (req, res) => {

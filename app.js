@@ -1,9 +1,9 @@
-console.log('Task Manager App')
 
 // imports
+require('./db/connect'); //connection to DB
+
 const express = require('express');
 const tasks = require('./routes/tasks')
-
 
 // inicializo express app
 const app = express(); 
