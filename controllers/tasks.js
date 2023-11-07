@@ -51,6 +51,7 @@ const getTask = async (req, res) => {
     // sino encuentra nada/Null, ese id no existe, me lo mandaron mal
 
     res.status(200).json({task})
+
   } catch (error) {
     res.status(500).json({msg: error})
   }
@@ -61,8 +62,24 @@ const updateTask = (req, res) => {
   res.send('update task')
 }
 
-const deleteTask = (req, res) => {
-  res.send('delete task')
+const deleteTask = async (req, res) => {
+  try {
+    const {id: taskId} = req.params //saco el Id a eliminar
+
+    // -D-elete method (especificando el elemtno a eliminar, WHERE)
+    const task = await Model.findOneAndDelete({_id:taskId}) //{} instance to delete
+
+    if (!task) return res.status(404).json({msg: `No task with id: ${taskId}`});
+
+    res.status(200).json({task:task})
+
+    //otros formatos de respuesta
+    // res.status(200).send() 
+    // res.status(200).json({task:null, status:'succesfull'})
+  } catch (error) {
+    res.status(500).json({msg: error})
+  }
+  
 }
 
 module.exports = {
