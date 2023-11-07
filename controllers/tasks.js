@@ -58,8 +58,22 @@ const getTask = async (req, res) => {
   
 }
 
-const updateTask = (req, res) => {
-  res.send('update task')
+const updateTask = async (req, res) => {
+  try {
+
+    const {id: taskId} = req.params;
+
+    // -U-pdate  method (espefico qué valor debe tomar ahora -SET-, y dónde haré los cambios -WHERE- )
+
+    const task = await Model.findOneAndUpdate({_id: taskId}, req.body, {new:true, runValidators: true}) //({instanceToMatch}, newData, options)
+    // con esas options me devuelvo el nuevo valor y aplica los validators
+
+    if (!task) return res.status(404).json({msg: `No task with id: ${taskId}`});
+
+    res.status(200).json({task})
+  } catch (error) {
+    res.status(500).json({msg: error})
+  }
 }
 
 const deleteTask = async (req, res) => {
