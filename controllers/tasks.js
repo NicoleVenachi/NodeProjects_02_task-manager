@@ -8,7 +8,26 @@ const getAllTasks = async (req, res) => {
   try {
     // -R-ead method
     const tasks = await Model.find({}); // {}, all documents/instances
-    res.status(200).json({tasks})
+
+    // ******Formatos posibles de respuests****
+    res.status(200).json({tasks}) //solo data
+
+    res.status(200).json({tasks, amount: tasks.length}) // amount of instances sended
+
+    res.status(200).json({
+        success: true, 
+        data: {tasks, nbHits:tasks.length} 
+    }) //flag indicando el resultado de la peticion, y la data (data y amount/number of hits)
+
+    res.status(200).json({
+      status: "success", 
+      data: {tasks, nbHits:tasks.length} 
+  }) //flag y data
+
+
+
+
+
   } catch (error) {
     res.status(500).json({msg: error})
   }

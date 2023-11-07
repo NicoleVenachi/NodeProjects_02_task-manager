@@ -12,7 +12,7 @@ const showTasks = async () => {
       data: { tasks },
     } = await axios.get('/api/v1/tasks')
 
-    // let {data: {tasks: asd}} = await axios.get('/api/v1/tasks')
+    // let {data: {tasks: asd}} = await axios.get('/api/v1/tasks') // lo desdestructuro asi, porque la data viene en este formato data: { tasks: [{},{}, {}]}
     // console.log(asd);
     // console.log(tasks);
     if (tasks.length < 1) {
