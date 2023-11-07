@@ -17,7 +17,8 @@ app.get('/hello', (req,res) => {
 // middlewares
 app.use(express.json()) //usar body en json type
 
-// routers
+// middlewares - routers
+app.use(express.static('./public')) // path
 app.use('/api/v1/tasks', tasks)
 
 // ******* summary de routes

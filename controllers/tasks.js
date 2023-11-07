@@ -7,8 +7,8 @@ const getAllTasks = async (req, res) => {
 
   try {
     // -R-ead method
-    const allTasks = await Model.find({}); // {}, all documents/instances
-    res.status(200).json({allTasks})
+    const tasks = await Model.find({}); // {}, all documents/instances
+    res.status(200).json({tasks})
   } catch (error) {
     res.status(500).json({msg: error})
   }
