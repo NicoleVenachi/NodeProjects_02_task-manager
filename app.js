@@ -4,7 +4,10 @@ const connectDB = require('./db/connect'); //connection to DB
 require('dotenv').config()
 
 const express = require('express');
+
 const tasks = require('./routes/tasks')
+
+const notFound = require('./middleware/not-found')
 
 // inicializo express app
 const app = express(); 
@@ -20,6 +23,8 @@ app.use(express.json()) //usar body en json type
 // middlewares - routers
 app.use(express.static('./public')) // path
 app.use('/api/v1/tasks', tasks)
+
+app.use(notFound)
 
 // ******* summary de routes
 // app.get('/api/v1/tasks)  -get all the tasks

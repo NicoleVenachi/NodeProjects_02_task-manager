@@ -12,17 +12,17 @@ const getAllTasks = async (req, res) => {
     // ******Formatos posibles de respuests****
     res.status(200).json({tasks}) //solo data
 
-    res.status(200).json({tasks, amount: tasks.length}) // amount of instances sended
+  //   res.status(200).json({tasks, amount: tasks.length}) // amount of instances sended
 
-    res.status(200).json({
-        success: true, 
-        data: {tasks, nbHits:tasks.length} 
-    }) //flag indicando el resultado de la peticion, y la data (data y amount/number of hits)
+  //   res.status(200).json({
+  //       success: true, 
+  //       data: {tasks, nbHits:tasks.length} 
+  //   }) //flag indicando el resultado de la peticion, y la data (data y amount/number of hits)
 
-    res.status(200).json({
-      status: "success", 
-      data: {tasks, nbHits:tasks.length} 
-  }) //flag y data
+  //   res.status(200).json({
+  //     status: "success", 
+  //     data: {tasks, nbHits:tasks.length} 
+  // }) //flag y data
 
 
 
