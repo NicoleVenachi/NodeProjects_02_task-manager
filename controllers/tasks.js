@@ -3,100 +3,80 @@
 // import models
 const Model = require('../models/Task'); //Task model
 
-const getAllTasks = async (req, res) => {
+//import middlewares
+const asyncWrapper = require('../middleware/async');
 
-  try {
+
+const getAllTasks = asyncWrapper( async (req, res) => {
+
+
     // -R-ead method
     const tasks = await Model.find({}); // {}, all documents/instances
 
     // ******Formatos posibles de respuests****
     res.status(200).json({tasks}) //solo data
 
-  //   res.status(200).json({tasks, amount: tasks.length}) // amount of instances sended
+    //   res.status(200).json({tasks, amount: tasks.length}) // amount of instances sended
 
-  //   res.status(200).json({
-  //       success: true, 
-  //       data: {tasks, nbHits:tasks.length} 
-  //   }) //flag indicando el resultado de la peticion, y la data (data y amount/number of hits)
+    //   res.status(200).json({
+    //       success: true, 
+    //       data: {tasks, nbHits:tasks.length} 
+    //   }) //flag indicando el resultado de la peticion, y la data (data y amount/number of hits)
 
-  //   res.status(200).json({
-  //     status: "success", 
-  //     data: {tasks, nbHits:tasks.length} 
-  // }) //flag y data
+    //   res.status(200).json({
+    //     status: "success", 
+    //     data: {tasks, nbHits:tasks.length} 
+    // }) //flag y data
 
+    // res.status(500).json({msg: error})
 
+} )
 
-
-
-  } catch (error) {
-    res.status(500).json({msg: error})
-  }
-
-}
-
-const createTask = async (req, res) => {
+const createTask = asyncWrapper( async (req, res) => {
 
   //req.body = {
   // 	"name": "testing",
   // 	"completed": false
   // }
 
-  try {
-    // -C-reate method
-    const task = await Model.create(req.body)
-    res.status(201).json({task}) //test to send what i've received
-
-  } catch (error) {
-    res.status(500).json({msg: error})
-  }
+  // -C-reate method
+  const task = await Model.create(req.body)
+  res.status(201).json({task}) //test to send what i've received
   
+})
 
-}
-
-const getTask = async (req, res) => {
+const getTask = asyncWrapper( async (req, res) => {
 
   const {id: taskId} = req.params //saco el Id de la URL params
-
-  try {
     // -R-ead method (con querying condition), para 1 único registro
 
-    console.log(taskId);
-    const task = await Model.findOne({_id: taskId});
-    // {configuro la condición, equality}
+  const task = await Model.findOne({_id: taskId});
+  // {configuro la condición, equality}
 
-    console.log(task);
+  if (!task) return res.status(404).json({msg: `No task with id: ${taskId}`});
+  // sino encuentra nada/Null, ese id no existe, me lo mandaron mal
 
-    if (!task) return res.status(404).json({msg: `No task with id: ${taskId}`});
-    // sino encuentra nada/Null, ese id no existe, me lo mandaron mal
+  res.status(200).json({task})
 
-    res.status(200).json({task})
+})
 
-  } catch (error) {
-    res.status(500).json({msg: error})
-  }
-  
-}
+const updateTask = asyncWrapper( async (req, res) => {
 
-const updateTask = async (req, res) => {
-  try {
+  const {id: taskId} = req.params;
 
-    const {id: taskId} = req.params;
+  // -U-pdate  method (espefico qué valor debe tomar ahora -SET-, y dónde haré los cambios -WHERE- )
 
-    // -U-pdate  method (espefico qué valor debe tomar ahora -SET-, y dónde haré los cambios -WHERE- )
+  const task = await Model.findOneAndUpdate({_id: taskId}, req.body, {new:true, runValidators: true}) //({instanceToMatch}, newData, options)
+  // con esas options me devuelvo el nuevo valor y aplica los validators
 
-    const task = await Model.findOneAndUpdate({_id: taskId}, req.body, {new:true, runValidators: true}) //({instanceToMatch}, newData, options)
-    // con esas options me devuelvo el nuevo valor y aplica los validators
+  if (!task) return res.status(404).json({msg: `No task with id: ${taskId}`});
 
-    if (!task) return res.status(404).json({msg: `No task with id: ${taskId}`});
+  res.status(200).json({task})
 
-    res.status(200).json({task})
-  } catch (error) {
-    res.status(500).json({msg: error})
-  }
-}
+} )
 
-const deleteTask = async (req, res) => {
-  try {
+const deleteTask = asyncWrapper( async (req, res) => {
+
     const {id: taskId} = req.params //saco el Id a eliminar
 
     // -D-elete method (especificando el elemtno a eliminar, WHERE)
@@ -106,14 +86,11 @@ const deleteTask = async (req, res) => {
 
     res.status(200).json({task:task})
 
-    //otros formatos de respuesta
+    //otros formatos de respuesta para delete
     // res.status(200).send() 
     // res.status(200).json({task:null, status:'succesfull'})
-  } catch (error) {
-    res.status(500).json({msg: error})
-  }
   
-}
+} )
 
 module.exports = {
   getAllTasks,
