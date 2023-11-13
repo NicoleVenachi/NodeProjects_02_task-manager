@@ -8,6 +8,7 @@ const express = require('express');
 const tasks = require('./routes/tasks')
 
 const notFound = require('./middleware/not-found')
+const errorHandlerMiddleware = require('./middleware/error-handler')
 
 // inicializo express app
 const app = express(); 
@@ -25,6 +26,7 @@ app.use(express.static('./public')) // path
 app.use('/api/v1/tasks', tasks)
 
 app.use(notFound)
+app.use(errorHandlerMiddleware)
 
 // ******* summary de routes
 // app.get('/api/v1/tasks)  -get all the tasks
