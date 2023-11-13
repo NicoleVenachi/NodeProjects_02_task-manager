@@ -37,7 +37,7 @@ app.use(errorHandlerMiddleware)
 // *********
 
 // defino el prueto a escuchar
-const PORT = 3000; // || process.env;
+const PORT = process.env.PORT || 3000;
 
 //llamo la conexión a la DB, sino se conecta, no pongo a correr el server
 
