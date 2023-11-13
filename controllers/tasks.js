@@ -6,6 +6,9 @@ const Model = require('../models/Task'); //Task model
 //import middlewares
 const asyncWrapper = require('../middleware/async');
 
+// importo para rear errors
+const {createCustomError} = require('../errors/custom-error');
+
 
 const getAllTasks = asyncWrapper( async (req, res) => {
 
@@ -45,7 +48,7 @@ const createTask = asyncWrapper( async (req, res) => {
   
 })
 
-const getTask = asyncWrapper( async (req, res) => {
+const getTask = asyncWrapper( async (req, res, next) => {
 
   const {id: taskId} = req.params //saco el Id de la URL params
     // -R-ead method (con querying condition), para 1 único registro
@@ -53,14 +56,28 @@ const getTask = asyncWrapper( async (req, res) => {
   const task = await Model.findOne({_id: taskId});
   // {configuro la condición, equality}
 
-  if (!task) return res.status(404).json({msg: `No task with id: ${taskId}`});
-  // sino encuentra nada/Null, ese id no existe, me lo mandaron mal
+  if (!task) { // sino encuentra nada/Null, ese id no existe, me lo mandaron mal
+
+    //----antes
+    // return res.status(404).json({msg: `No task with id: ${taskId}`});
+
+    // -- con objeto easy
+    // const error = new Error('Not found'); // creo error
+    // error.status = 404;
+
+    // -- con objeto formal
+    return next(createCustomError('Not found', 404)); // mando al error Handler
+
+    // throw error; // lanzo el error
+
+  }
+
 
   res.status(200).json({task})
 
 })
 
-const updateTask = asyncWrapper( async (req, res) => {
+const updateTask = asyncWrapper( async (req, res, next) => {
 
   const {id: taskId} = req.params;
 
@@ -69,20 +86,24 @@ const updateTask = asyncWrapper( async (req, res) => {
   const task = await Model.findOneAndUpdate({_id: taskId}, req.body, {new:true, runValidators: true}) //({instanceToMatch}, newData, options)
   // con esas options me devuelvo el nuevo valor y aplica los validators
 
-  if (!task) return res.status(404).json({msg: `No task with id: ${taskId}`});
+  if (!task) {
+    return next(createCustomError(`No task with id : ${taskId}`, 404));
+  }
 
   res.status(200).json({task})
 
 } )
 
-const deleteTask = asyncWrapper( async (req, res) => {
+const deleteTask = asyncWrapper( async (req, res, next) => {
 
     const {id: taskId} = req.params //saco el Id a eliminar
 
     // -D-elete method (especificando el elemtno a eliminar, WHERE)
     const task = await Model.findOneAndDelete({_id:taskId}) //{} instance to delete
 
-    if (!task) return res.status(404).json({msg: `No task with id: ${taskId}`});
+    if (!task) {
+      return next(createCustomError(`No task with id : ${taskId}`, 404));
+    }
 
     res.status(200).json({task:task})
 
